@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI - Berpikir Komputasional Kelas 8</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Plus Jakarta Sans & Outfit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0f172a;      /* Deep Navy/Slate */
+            --brand-blue: #0284c7;        /* Electric Sky Blue */
+            --light-bg: #f8fafc;          /* Soft Clean Gray */
+            --accent-gold: #f59e0b;      /* Warm Gold Accent */
+            --card-border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-main);
+            padding-bottom: 70px;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Navbar Modern */
+        .navbar-custom {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            color: #94a3b8 !important;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-radius: 8px;
+            padding: 6px 14px !important;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #ffffff !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Banner Glassmorphism */
+        .hero-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0284c7 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 50px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(2, 132, 199, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Elevasi Card */
+        .card-custom {
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            background: #ffffff;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+        }
+
+        /* Section Transition */
+        .app-section {
+            display: none;
+        }
+
+        .app-section.active-section {
+            display: block;
+            animation: slideUpFade 0.4s ease-out;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Gambar Ilustrasi Format Styling */
+        .img-illustration {
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Flip Card */
+        .flip-card {
+            background-color: transparent;
+            height: 280px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--card-border);
+        }
+
+        .flip-card-front {
+            background-color: #ffffff;
+            color: var(--primary-blue);
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, #0284c7, #0f172a);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* Kuis Option Styling */
+        .quiz-option {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            background-color: #fff;
+            font-weight: 500;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--brand-blue);
+            background-color: #f0f9ff;
+        }
+
+        .quiz-option.selected-correct {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+            color: #065f46;
+        }
+
+        .quiz-option.selected-wrong {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+
+        /* Floating Audio Button */
+        .audio-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1000;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 1.3rem;
+            box-shadow: 0 8px 25px rgba(2, 132, 199, 0.3);
+            border: none;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 12px;
+            padding: 10px 18px;
+            color: var(--text-muted) !important;
+            border: 1px solid transparent;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--brand-blue) !important;
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Control Floating Button -->
+    <button id="audioToggleBtn" class="btn btn-warning audio-btn text-white fw-bold" onclick="toggleAudio()" title="Aktifkan/Matikan Suara">
+        <i class="fas fa-volume-up" id="audioIcon"></i>
+    </button>
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-white d-flex align-items-center" href="#" onclick="navigateTo('sec-beranda')">
+                <i class="fas fa-brain text-info me-2 fs-4"></i>MPI Informatika
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse d-none d-lg-block">
+                <ul class="navbar-nav ms-auto gap-1">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-beranda')"><i class="fas fa-home me-1"></i> Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-petunjuk')"><i class="fas fa-compass me-1"></i> Petunjuk</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-cptp')"><i class="fas fa-bullseye me-1"></i> CP-TP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-apersepsi')"><i class="fas fa-lightbulb me-1"></i> Apersepsi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-asesmen-awal')"><i class="fas fa-clipboard-check me-1"></i> Asesmen Awal</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-materi')"><i class="fas fa-book-open me-1"></i> Materi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-kuis')"><i class="fas fa-pen-nib me-1"></i> Kuis</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-refleksi')"><i class="fas fa-comment-dots me-1"></i> Refleksi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('sec-profil')"><i class="fas fa-user-circle me-1"></i> Profil</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar -->
+    <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebarMenu">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title font-heading"><i class="fas fa-bars me-2 text-info"></i>Navigasi MPI</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-beranda')" data-bs-dismiss="offcanvas"><i class="fas fa-home me-2 text-info"></i> Beranda</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-petunjuk')" data-bs-dismiss="offcanvas"><i class="fas fa-compass me-2 text-info"></i> Petunjuk</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-cptp')" data-bs-dismiss="offcanvas"><i class="fas fa-bullseye me-2 text-info"></i> CP & TP</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-apersepsi')" data-bs-dismiss="offcanvas"><i class="fas fa-lightbulb me-2 text-info"></i> Apersepsi</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-asesmen-awal')" data-bs-dismiss="offcanvas"><i class="fas fa-clipboard-check me-2 text-info"></i> Asesmen Awal</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-materi')" data-bs-dismiss="offcanvas"><i class="fas fa-book-open me-2 text-info"></i> Materi Pembelajaran</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-kuis')" data-bs-dismiss="offcanvas"><i class="fas fa-pen-nib me-2 text-info"></i> Kuis Interaktif</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-refleksi')" data-bs-dismiss="offcanvas"><i class="fas fa-comment-dots me-2 text-info"></i> Refleksi & Kirim Laporan</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#" onclick="navigateTo('sec-profil')" data-bs-dismiss="offcanvas"><i class="fas fa-user-circle me-2 text-info"></i> Profil Pengembang</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mt-4">
+
+        <!-- 1. BERANDA -->
+        <section id="sec-beranda" class="app-section active-section">
+            <div class="hero-banner text-center">
+                <span class="badge bg-warning text-dark font-heading px-3 py-2 rounded-pill mb-3 fw-bold">Informatika SMP Kelas 8</span>
+                <h1 class="display-5 fw-bold mb-2">Berpikir Komputasional</h1>
+                <p class="lead opacity-90 mb-0">Fungsi • Himpunan • Sistem Bilangan • Struktur Data</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="card card-custom p-4">
+                        <div class="text-center mb-3">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&auto=format&fit=crop" class="img-illustration" alt="Siswa Belajar">
+                            <h4 class="fw-bold text-dark mb-1">Form Identitas Siswa</h4>
+                            <p class="text-muted small">Lengkapi data diri kamu untuk mulai petualangan belajar!</p>
+                        </div>
+                        <form id="formIdentitas">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Nama Lengkap</label>
+                                <input type="text" class="form-control form-control-lg fs-6" id="inputNama" placeholder="Contoh: Budi Santoso" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small">Asal Sekolah</label>
+                                <input type="text" class="form-control form-control-lg fs-6" id="inputSekolah" placeholder="Contoh: SMPN 1 Nusantara" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold small">Kelas / No. Absen</label>
+                                <input type="text" class="form-control form-control-lg fs-6" id="inputKelas" placeholder="Contoh: 8A / 12" required>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-lg w-100 fw-bold rounded-3 shadow-sm" onclick="simpanIdentitas()">
+                                <i class="fas fa-paper-plane me-2"></i>Mulai Pembelajaran
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PETUNJUK -->
+        <section id="sec-petunjuk" class="app-section">
+            <div class="card card-custom p-4">
+                <h3 class="fw-bold text-primary mb-3"><i class="fas fa-compass me-2"></i>Petunjuk Penggunaan MPI</h3>
+                <div class="row g-4 mt-1">
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded-4 bg-white text-center h-100 shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&auto=format&fit=crop" class="rounded-3 mb-3 w-100" style="height: 120px; object-fit: cover;" alt="Petunjuk 1">
+                            <h6 class="fw-bold">1. Isi Diri & Diagnostik</h6>
+                            <p class="small text-muted mb-0">Isi data pada Beranda dan ikuti Asesmen Awal untuk menguji pengetahuan dasarmu.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded-4 bg-white text-center h-100 shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=300&auto=format&fit=crop" class="rounded-3 mb-3 w-100" style="height: 120px; object-fit: cover;" alt="Petunjuk 2">
+                            <h6 class="fw-bold">2. Eksplorasi Materi</h6>
+                            <p class="small text-muted mb-0">Gunakan tab interaktif dan flip cards untuk mempelajari 4 konsep penting.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded-4 bg-white text-center h-100 shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=300&auto=format&fit=crop" class="rounded-3 mb-3 w-100" style="height: 120px; object-fit: cover;" alt="Petunjuk 3">
+                            <h6 class="fw-bold">3. Kuis & Laporan</h6>
+                            <p class="small text-muted mb-0">Jawab kuis interaktif, tulis refleksi, dan kirimkan hasilnya langsung ke guru.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CP & TP -->
+        <section id="sec-cptp" class="app-section">
+            <div class="card card-custom p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="fw-bold text-primary mb-3"><i class="fas fa-bullseye me-2"></i>Capaian & Tujuan Pembelajaran</h3>
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-dark"><i class="fas fa-award me-2 text-warning"></i>Capaian Pembelajaran (CP)</h5>
+                            <p class="text-muted">Pada akhir fase D, peserta didik mampu menerapkan berpikir komputasional untuk menyelesaikan persoalan data diskrit bervolume kecil serta mendisposisikan berpikir komputasional dalam bidang lainnya.</p>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark"><i class="fas fa-check-circle me-2 text-success"></i>Tujuan Pembelajaran (TP)</h5>
+                            <ul class="list-unstyled text-secondary">
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>Memahami konsep dasar dan penerapan <strong>Fungsi</strong> dalam komputasi.</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>Mengidentifikasi operasi dasar <strong>Himpunan</strong> dan penerapannya.</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>Mengonversi angka pada <strong>Sistem Bilangan</strong> Biner dan Desimal.</li>
+                                <li class="mb-2"><i class="fas fa-angle-right text-primary me-2"></i>Menganalisis prinsip kerja <strong>Struktur Data</strong> (Stack & Queue).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&auto=format&fit=crop" class="img-fluid rounded-4 shadow" alt="Target Pembelajaran">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. APERSEPSI -->
+        <section id="sec-apersepsi" class="app-section">
+            <div class="card card-custom p-4">
+                <h3 class="fw-bold text-primary mb-3"><i class="fas fa-lightbulb me-2"></i>Apersepsi: Kehidupan Sehari-hari</h3>
+                <div class="row align-items-center g-4">
+                    <div class="col-md-6">
+                        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop" class="img-fluid rounded-4 shadow-sm" alt="Apersepsi Gambar">
+                    </div>
+                    <div class="col-md-6">
+                        <p class="fs-6">Pernahkah kamu memesan makanan via aplikasi, mengantre di kasir, atau menyusun tumpukan buku di meja belajar?</p>
+                        <p class="fs-6">Tanpa disadari, langkah-langkah terstruktur yang kamu lakukan tersebut berlandaskan prinsip **Berpikir Komputasional**!</p>
+                        <div class="p-3 bg-light rounded-3 border-start border-primary border-4">
+                            <small class="fw-semibold text-dark">💡 Tahukah Kamu?</small>
+                            <p class="small text-muted mb-0">Berpikir komputasional memetakan masalah kompleks menjadi langkah-langkah logis yang mudah diselesaikan oleh manusia maupun komputer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ASESMEN AWAL -->
+        <section id="sec-asesmen-awal" class="app-section">
+            <div class="card card-custom p-4">
+                <h3 class="fw-bold text-primary mb-2"><i class="fas fa-clipboard-check me-2"></i>Asesmen Awal Diagnostik</h3>
+                <p class="text-muted mb-4">Jawablah pertanyaan cepat ini untuk mengukur pemahaman awalmu!</p>
+
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <div class="mb-4">
+                            <p class="fw-bold mb-2">1. Jika input mesin A angka 3 menghasilkan 9, dan input 4 menghasilkan 12. Berapakah hasil jika inputnya 5?</p>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="d1" id="d1a"><label class="form-check-label" for="d1a">15</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="d1" id="d1b"><label class="form-check-label" for="d1b">10</label></div>
+                        </div>
+                        <div class="mb-4">
+                            <p class="fw-bold mb-2">2. Sistem bilangan yang hanya mengenali dua simbol (0 dan 1) dinamakan...</p>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="d2" id="d2a"><label class="form-check-label" for="d2a">Sistem Desimal</label></div>
+                            <div class="form-check"><input class="form-check-input" type="radio" name="d2" id="d2b"><label class="form-check-label" for="d2b">Sistem Biner</label></div>
+                        </div>
+                        <button class="btn btn-outline-primary fw-bold px-4" onclick="cekAsesmenAwal()"><i class="fas fa-check me-1"></i> Simpan Jawaban</button>
+                        <div id="diagResult" class="mt-3"></div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <img src="https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=400&auto=format&fit=crop" class="img-fluid rounded-4 shadow-sm" alt="Tes Diagnostik">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. MATERI PEMBELAJARAN -->
+        <section id="sec-materi" class="app-section">
+            <div class="card card-custom p-4">
+                <h3 class="fw-bold text-primary mb-3"><i class="fas fa-book-open me-2"></i>Materi Pembelajaran</h3>
+
+                <!-- Nav Pills Tab -->
+                <ul class="nav nav-pills nav-justified mb-4 gap-2" id="materiTab" role="tablist">
+                    <li class="nav-item"><button class="nav-link active fw-bold" data-bs-toggle="pill" data-bs-target="#mat-fungsi">1. Fungsi</button></li>
+                    <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill" data-bs-target="#mat-himpunan">2. Himpunan</button></li>
+                    <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill" data-bs-target="#mat-bilangan">3. Bilangan</button></li>
+                    <li class="nav-item"><button class="nav-link fw-bold" data-bs-toggle="pill" data-bs-target="#mat-data">4. Struktur Data</button></li>
+                </ul>
+
+                <div class="tab-content">
+                    
+                    <!-- MATERI 1: FUNGSI -->
+                    <div class="tab-pane fade show active" id="mat-fungsi">
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-7">
+                                <h4 class="fw-bold text-dark">Konsep Pemrosesan Fungsi</h4>
+                                <p class="text-muted">Fungsi dalam pemrograman diibaratkan sebagai sebuah **mesin otomatis**. Mesin menerima *Input*, mengolah sesuai rumus, lalu memberikan *Output* hasil akhir.</p>
+                            </div>
+                            <div class="col-md-5">
+                                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&auto=format&fit=crop" class="img-fluid rounded-4 shadow-sm" alt="Mesin / Fungsi">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front">
+                                            <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
+                                            <h5 class="fw-bold">Aturan Matematika</h5>
+                                            <p class="small text-muted mb-0">Klik untuk membalik kartu</p>
+                                        </div>
+                                        <div class="flip-card-back">
+                                            <h6 class="fw-bold mb-2">Contoh Simulasi</h6>
+                                            <p class="small mb-0">Fungsi $f(x) = 2x + 1$.<br>Jika Input $x = 4$, maka Outputnya $2(4) + 1 = 9$.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front">
+                                            <i class="fas fa-code fa-3x text-primary mb-3"></i>
+                                            <h5 class="fw-bold">Fungsi dalam Kode</h5>
+                                            <p class="small text-muted mb-0">Klik untuk membalik kartu</p>
+                                        </div>
+                                        <div class="flip-card-back">
+                                            <h6 class="fw-bold mb-2">Efisiensi Program</h6>
+                                            <p class="small mb-0">Membuat kumpulan perintah berulang dapat dipanggil dengan 1 nama fungsi singkat.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATERI 2: HIMPUNAN -->
+                    <div class="tab-pane fade" id="mat-himpunan">
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-7">
+                                <h4 class="fw-bold text-dark">Logika Himpunan & Operasi Data</h4>
+                                <p class="text-muted">Himpunan mengelompokkan objek data sejenis. Digunakan dalam mesin pencari dan pemrosesan basis data logis.</p>
+                            </div>
+                            <div class="col-md-5">
+                                <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?w=400&auto=format&fit=crop" class="img-fluid rounded-4 shadow-sm" alt="Himpunan Data">
+                            </div>
+                        </div>
+
+                        <div class="accordion" id="accHimpun">
+                            <div class="accordion-item border rounded-3 mb-2">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#h1">
+                                        <i class="fas fa-object-group me-2 text-primary"></i>1. Irisan (Intersection - AND)
+                                    </button>
+                                </h2>
+                                <div id="h1" class="accordion-collapse collapse show" data-bs-parent="#accHimpun">
+                                    <div class="accordion-body text-muted">
+                                        Memilih elemen yang ada di dalam Himpunan A **SEKALIGUS** ada di Himpunan B.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border rounded-3 mb-2">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#h2">
+                                        <i class="fas fa-cubes me-2 text-primary"></i>2. Gabungan (Union - OR)
+                                    </button>
+                                </h2>
+                                <div id="h2" class="accordion-collapse collapse" data-bs-parent="#accHimpun">
+                                    <div class="accordion-body text-muted">
+                                        Menggabungkan **SELURUH** elemen unik yang berasal dari kelompok A maupun kelompok B.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MATERI 3: SISTEM BILANGAN -->
+                    <div class="tab-pane fade" id="mat-bilangan">
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-7">
+                                <h4 class="fw-bold text-dark">Bahasa Komputer: Sistem Biner</h4>
+                                <p class="text-muted">Komputer merepresentasikan data lewat sinyal listrik (1 = ON, 0 = OFF). Sistem ini menggunakan basis 2.</p>
+                            </div>
+                            <div class="col-md-5">
+                                <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&auto=format&fit=crop" class="img-fluid rounded-4 shadow-sm" alt="Binary Code">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover border align-middle text-center">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Desimal (Basis 10)</th>
+                                        <th>Biner (Basis 2)</th>
+                                        <th>Representasi Sinyal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>0</td><td><span class="badge bg-secondary">0000</span></td><td>Mati Total</td></tr>
+                                    <tr><td>1</td><td><span class="badge bg-info">0001</span></td><td>Sinyal 1 Aktif</td></tr>
+                                    <tr><td>2</td><td><span class="badge bg-info">0010</span></td><td>Sinyal 2 Aktif</td></tr>
+                                    <tr><td>5</td><td><span class="badge bg-primary">0101</span></td><td>Kombinasi $4 + 1$</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MATERI 4: STRUKTUR DATA -->
+                    <div class="tab-pane fade" id="mat-data">
+                        <div class="row g-4 align-items-center">
+                            <div class="col-md-6">
+                                <div class="card p-3 border-0 bg-light rounded-4 h-100">
+                                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&auto=format&fit=crop" class="img-illustration" alt="Stack Tumpukan Buku">
+                                    <h5 class="fw-bold text-primary"><i class="fas fa-layer-group me-2"></i>Stack (Tumpukan - LIFO)</h5>
+                                    <p class="small text-muted mb-0"><strong>Last In First Out:</strong> Elemen terakhir yang masuk menjadi yang pertama diambil. Contoh: Tombol Undo dan Tumpukan Piring.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card p-3 border-0 bg-light rounded-4 h-100">
+                                    <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=400&auto=format&fit=crop" class="img-illustration" alt="Queue Antrean">
+                                    <h5 class="fw-bold text-primary"><i class="fas fa-users-line me-2"></i>Queue (Antrean - FIFO)</h5>
+                                    <p class="small text-muted mb-0"><strong>First In First Out:</strong> Elemen pertama yang masuk akan dilayani pertama kali. Contoh: Antrean Loket & Cetak Dokumen Printer.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. KUIS INTERAKTIF -->
+        <section id="sec-kuis" class="app-section">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="fw-bold text-primary mb-0"><i class="fas fa-pen-nib me-2"></i>Kuis Evaluasi</h3>
+                    <span id="quizProgress" class="badge bg-dark font-heading px-3 py-2">Soal 1 / 5</span>
+                </div>
+
+                <div id="quizBody">
+                    <h5 id="quizQuestion" class="fw-semibold mb-3">Memuat Soal...</h5>
+                    <div id="quizOptions"></div>
+                    <div id="quizFeedback" class="mt-3"></div>
+                    <button id="nextBtn" class="btn btn-primary mt-3 d-none fw-bold px-4" onclick="nextQuestion()">Lanjut Soal <i class="fas fa-arrow-right ms-1"></i></button>
+                </div>
+
+                <!-- Result Score -->
+                <div id="quizResult" class="text-center d-none py-4">
+                    <img src="https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&auto=format&fit=crop" class="rounded-circle mb-3 shadow" style="width:120px; height:120px; object-fit:cover;" alt="Trophy">
+                    <h3 class="fw-bold">Kuis Selesai!</h3>
+                    <p class="fs-5 text-muted">Hasil Perolehan Skor Kamu:</p>
+                    <h1 class="display-3 fw-bold text-primary mb-4" id="userScore">0</h1>
+                    <button class="btn btn-outline-primary fw-bold me-2" onclick="restartQuiz()"><i class="fas fa-redo me-1"></i>Ulangi Kuis</button>
+                    <button class="btn btn-success fw-bold" onclick="navigateTo('sec-refleksi')"><i class="fas fa-comment-alt me-1"></i>Isi Refleksi</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. REFLEKSI & KIRIM LAPORAN -->
+        <section id="sec-refleksi" class="app-section">
+            <div class="card card-custom p-4">
+                <h3 class="fw-bold text-primary mb-3"><i class="fas fa-comment-dots me-2"></i>Refleksi & Kirim Laporan</h3>
+                
+                <form id="formRefleksi">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Materi yang Sudah Dipahami</label>
+                        <textarea class="form-control" id="inputDipahami" rows="3" placeholder="Tuliskan bagian materi yang menurutmu mudah dipahami..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Kendala / Pertanyaan</label>
+                        <textarea class="form-control" id="inputKendala" rows="3" placeholder="Tuliskan kendala atau topik yang masih membingungkan..." required></textarea>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 mb-4 border">
+                        <h6 class="fw-bold text-dark mb-1"><i class="fas fa-info-circle text-primary me-2"></i>Ringkasan Hasil Belajar</h6>
+                        <small class="text-muted d-block">Siswa: <strong id="summaryNama">-</strong> (<strong id="summarySekolah">-</strong>)</small>
+                        <small class="text-muted d-block">Skor Akhir Kuis: <strong id="summarySkor" class="text-primary">0</strong> / 100</small>
+                    </div>
+
+                    <button type="button" class="btn btn-success btn-lg w-100 fw-bold shadow-sm" onclick="kirimLaporan()">
+                        <i class="fas fa-paper-plane me-2"></i>Kirim Laporan Ke Google Sheets
+                    </button>
+                </form>
+
+                <div id="statusMessage" class="mt-3"></div>
+            </div>
+        </section>
+
+        <!-- 9. PROFIL -->
+        <section id="sec-profil" class="app-section">
+            <div class="card card-custom p-4 text-center">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop" class="rounded-circle mx-auto mb-3 shadow" style="width: 120px; height: 120px; object-fit: cover;" alt="Profil">
+                <h4 class="fw-bold mb-1">Pengembang Media Pembelajaran</h4>
+                <p class="text-muted small mb-3">Informatika SMP Kelas 8</p>
+                <span class="badge bg-primary font-heading mx-auto px-3 py-2 rounded-pill">Berpikir Komputasional</span>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Script -->
+    <script>
+        let studentData = { nama: '', sekolah: '', kelas: '', skor: 0 };
+        let audioEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.05);
+                } else if (type === 'correct') {
+                    osc.frequency.setValueAtTime(550, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(850, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'wrong') {
+                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.2);
+                }
+            } catch (e) {
+                console.log("Audio Error:", e);
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audioIcon');
+            const btn = document.getElementById('audioToggleBtn');
+            if (audioEnabled) {
+                icon.className = 'fas fa-volume-up';
+                btn.className = 'btn btn-warning audio-btn text-white fw-bold';
+            } else {
+                icon.className = 'fas fa-volume-mute';
+                btn.className = 'btn btn-secondary audio-btn text-white fw-bold';
+            }
+        }
+
+        function navigateTo(sectionId) {
+            playSound('click');
+            document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active-section'));
+            const target = document.getElementById(sectionId);
+            if (target) target.classList.add('active-section');
+            window.scrollTo(0, 0);
+        }
+
+        function simpanIdentitas() {
+            const nama = document.getElementById('inputNama').value.trim();
+            const sekolah = document.getElementById('inputSekolah').value.trim();
+            const kelas = document.getElementById('inputKelas').value.trim();
+
+            if (!nama || !sekolah || !kelas) {
+                alert('Mohon isi seluruh data identitas!');
+                return;
+            }
+
+            studentData.nama = nama;
+            studentData.sekolah = sekolah;
+            studentData.kelas = kelas;
+
+            document.getElementById('summaryNama').innerText = nama;
+            document.getElementById('summarySekolah').innerText = sekolah;
+
+            playSound('correct');
+            alert(`Selamat Datang, ${nama}!`);
+            navigateTo('sec-petunjuk');
+        }
+
+        function cekAsesmenAwal() {
+            playSound('click');
+            document.getElementById('diagResult').innerHTML = `
+                <div class="alert alert-success border-0 py-2"><i class="fas fa-check-circle me-1"></i> Jawaban tersimpan! Silakan lanjut ke menu Materi.</div>
+            `;
+        }
+
+        const quizData = [
+            { q: "Sebuah fungsi f(x) = x + 5. Jika input x = 4, maka hasil output f(x) adalah...", options: ["7", "8", "9", "10"], answer: 2 },
+            { q: "Operasi Himpunan yang mengambil anggota yang ada di kedua himpunan sekaligus dinamakan...", options: ["Gabungan", "Irisan", "Komplemen", "Selisih"], answer: 1 },
+            { q: "Nilai desimal dari angka biner 101 adalah...", options: ["3", "5", "6", "7"], answer: 1 },
+            { q: "Tumpukan piring menggunakan konsep struktur data...", options: ["Queue (FIFO)", "Stack (LIFO)", "Sorting", "Tree"], answer: 1 },
+            { q: "Antrean loket pembelian tiket menerapkan konsep...", options: ["Queue (FIFO)", "Stack (LIFO)", "Graph", "Binary"], answer: 0 }
+        ];
+
+        let currentQ = 0;
+        let scoreCount = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            answered = false;
+            const q = quizData[currentQ];
+            document.getElementById('quizProgress').innerText = `Soal ${currentQ + 1} / ${quizData.length}`;
+            document.getElementById('quizQuestion').innerText = `${currentQ + 1}. ${q.q}`;
+            document.getElementById('quizFeedback').innerHTML = '';
+            document.getElementById('nextBtn').classList.add('d-none');
+
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                div.className = 'quiz-option';
+                div.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                div.onclick = () => selectAnswer(idx, div);
+                optionsContainer.appendChild(div);
+            });
+        }
+
+        function selectAnswer(selectedIdx, element) {
+            if (answered) return;
+            answered = true;
+
+            const q = quizData[currentQ];
+            const allOptions = document.querySelectorAll('.quiz-option');
+
+            if (selectedIdx === q.answer) {
+                element.classList.add('selected-correct');
+                playSound('correct');
+                scoreCount += (100 / quizData.length);
+                document.getElementById('quizFeedback').innerHTML = `<div class="alert alert-success py-2 border-0"><i class="fas fa-check me-1"></i> Benar sekali!</div>`;
+            } else {
+                element.classList.add('selected-wrong');
+                allOptions[q.answer].classList.add('selected-correct');
+                playSound('wrong');
+                document.getElementById('quizFeedback').innerHTML = `<div class="alert alert-danger py-2 border-0"><i class="fas fa-times me-1"></i> Jawaban kurang tepat.</div>`;
+            }
+
+            document.getElementById('nextBtn').classList.remove('d-none');
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            currentQ++;
+            if (currentQ < quizData.length) {
+                loadQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            studentData.skor = scoreCount;
+            document.getElementById('quizBody').classList.add('d-none');
+            document.getElementById('quizResult').classList.remove('d-none');
+            document.getElementById('userScore').innerText = scoreCount;
+            document.getElementById('summarySkor').innerText = scoreCount;
+        }
+
+        function restartQuiz() {
+            playSound('click');
+            currentQ = 0;
+            scoreCount = 0;
+            document.getElementById('quizResult').classList.add('d-none');
+            document.getElementById('quizBody').classList.remove('d-none');
+            loadQuestion();
+        }
+
+        loadQuestion();
+
+        function kirimLaporan() {
+            playSound('click');
+
+            if (!studentData.nama) {
+                alert('Silakan isi Identitas terlebih dahulu!');
+                navigateTo('sec-beranda');
+                return;
+            }
+
+            const dipahami = document.getElementById('inputDipahami').value.trim();
+            const kendala = document.getElementById('inputKendala').value.trim();
+
+            if (!dipahami || !kendala) {
+                alert('Mohon isi kolom refleksi terlebih dahulu!');
+                return;
+            }
+
+            const statusMsg = document.getElementById('statusMessage');
+            statusMsg.innerHTML = `<div class="alert alert-info border-0"><span class="spinner-border spinner-border-sm me-2"></span>Mengirim laporan...</div>`;
+
+            const payload = {
+                media: "Mengenal Data & Tipe Data",
+                sekolah: studentData.sekolah,
+                nama: studentData.nama,
+                kelas: studentData.kelas,
+                skor: studentData.skor,
+                skor_maksimal: 100,
+                materi_dipahami: dipahami,
+                kendala: kendala,
+                sumber: "MPI Informatika Kelas 7"
+            };
+
+            const webAppUrl = 'https://script.google.com/macros/s/AKfycby7xzEJAXGhQ8YFTrSTfL4SHOpVd-HZJNM5Vf1vUC_SchJ_dZA8pvoK2LRJ6QwRy24crA/exec';
+
+            fetch(webAppUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                playSound('correct');
+                statusMsg.innerHTML = `<div class="alert alert-success border-0"><i class="fas fa-check-circle me-1"></i> <strong>Laporan Berhasil Terkirim!</strong></div>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                playSound('wrong');
+                statusMsg.innerHTML = `<div class="alert alert-danger border-0"><i class="fas fa-exclamation-triangle me-1"></i> Gagal mengirim laporan.</div>`;
+            });
+        }
+    </script>
+</body>
+</html>
